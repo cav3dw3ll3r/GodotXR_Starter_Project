@@ -1,0 +1,66 @@
+[gd_scene load_steps=14 format=3 uid="uid://cxi0udj1p0tsv"]
+
+[ext_resource type="Script" uid="uid://qw245bkasrmj" path="res://bouncing_ball.gd" id="1_01kih"]
+[ext_resource type="Shader" uid="uid://by8js2upkvx38" path="res://Shaders/data_ball.gdshader" id="2_1iob0"]
+[ext_resource type="PackedScene" uid="uid://c25yxb0vt53vc" path="res://addons/godot-xr-tools/objects/grab_points/grab_point_hand_left.tscn" id="3_0jqm0"]
+[ext_resource type="Animation" uid="uid://dd67rufxwj2u" path="res://addons/godot-xr-tools/hands/animations/left/Grip 3.res" id="4_nidkk"]
+[ext_resource type="Script" uid="uid://bxbh23qhqexjt" path="res://addons/godot-xr-tools/hands/poses/hand_pose_settings.gd" id="5_vb544"]
+[ext_resource type="PackedScene" uid="uid://ctw7nbntd5pcj" path="res://addons/godot-xr-tools/objects/grab_points/grab_point_hand_right.tscn" id="6_mkf06"]
+[ext_resource type="Animation" uid="uid://rs7vpclot07o" path="res://addons/godot-xr-tools/hands/animations/right/Grip 3.res" id="7_tqsku"]
+
+[sub_resource type="PhysicsMaterial" id="PhysicsMaterial_7ddsq"]
+bounce = 2.0
+
+[sub_resource type="SphereShape3D" id="SphereShape3D_uo1lv"]
+radius = 0.05
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_xkxai"]
+render_priority = 0
+shader = ExtResource("2_1iob0")
+shader_parameter/time_speed = 1.2
+shader_parameter/glow_color = Vector3(0.1, 0.8, 1.5)
+shader_parameter/glow_strength = 1.8
+shader_parameter/grid_density = 35.0
+shader_parameter/scroll_speed = 1.5
+shader_parameter/distortion_amount = 0.25
+shader_parameter/fresnel_power = 4.0
+
+[sub_resource type="SphereMesh" id="SphereMesh_omfl6"]
+material = SubResource("ShaderMaterial_xkxai")
+radius = 0.05
+height = 0.1
+
+[sub_resource type="Resource" id="Resource_grrky"]
+script = ExtResource("5_vb544")
+open_pose = ExtResource("4_nidkk")
+closed_pose = ExtResource("4_nidkk")
+metadata/_custom_type_script = "uid://bxbh23qhqexjt"
+
+[sub_resource type="Resource" id="Resource_jrfpt"]
+script = ExtResource("5_vb544")
+open_pose = ExtResource("7_tqsku")
+closed_pose = ExtResource("7_tqsku")
+metadata/_custom_type_script = "uid://bxbh23qhqexjt"
+
+[node name="Ball" type="RigidBody3D"]
+collision_layer = 5
+collision_mask = 196615
+physics_material_override = SubResource("PhysicsMaterial_7ddsq")
+freeze_mode = 1
+script = ExtResource("1_01kih")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="."]
+shape = SubResource("SphereShape3D_uo1lv")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="."]
+mesh = SubResource("SphereMesh_omfl6")
+
+[node name="GrabPointHandLeft" parent="." instance=ExtResource("3_0jqm0")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.0224481, 0.0402296, -0.0804138)
+visible = true
+hand_pose = SubResource("Resource_grrky")
+
+[node name="GrabPointHandRight" parent="." instance=ExtResource("6_mkf06")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.0209318, 0.0423661, -0.0809922)
+visible = true
+hand_pose = SubResource("Resource_jrfpt")

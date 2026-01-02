@@ -1,0 +1,281 @@
+[gd_scene load_steps=21 format=3 uid="uid://dj6xf0ql7gwdu"]
+
+[ext_resource type="Script" uid="uid://bqw0mnwltgofs" path="res://addons/godot-xr-tools/xr/start_xr.gd" id="1_04wuu"]
+[ext_resource type="Shader" uid="uid://c7hj4y6l7moa6" path="res://trippy_sky.gdshader" id="1_jrfpt"]
+[ext_resource type="Script" uid="uid://b413xsqlx50gc" path="res://addons/godot-xr-tools/functions/movement_direct.gd" id="1_xjfwu"]
+[ext_resource type="PackedScene" uid="uid://diyu06cw06syv" path="res://addons/godot-xr-tools/player/player_body.tscn" id="1_y6ddt"]
+[ext_resource type="PackedScene" uid="uid://b4kad2kuba1yn" path="res://addons/godot-xr-tools/hands/scenes/lowpoly/left_hand_low.tscn" id="2_rj66w"]
+[ext_resource type="Script" uid="uid://c7f8dmrhmbqlj" path="res://addons/godot-xr-tools/functions/movement_jump.gd" id="2_y357x"]
+[ext_resource type="PackedScene" uid="uid://b4ysuy43poobf" path="res://addons/godot-xr-tools/functions/function_pickup.tscn" id="3_2vn5f"]
+[ext_resource type="Script" uid="uid://dvhq2nm2cg5gs" path="res://addons/godot-xr-tools/functions/movement_turn.gd" id="3_rj66w"]
+[ext_resource type="Script" uid="uid://bv2m2vhbmhphl" path="res://addons/godot-xr-tools/overrides/ground_physics_settings.gd" id="4_xjfwu"]
+[ext_resource type="PackedScene" uid="uid://l2n30mpbkdyw" path="res://addons/godot-xr-tools/hands/scenes/lowpoly/right_hand_low.tscn" id="5_2vn5f"]
+[ext_resource type="Script" uid="uid://btb3p66axmos5" path="res://BoundPickable.gd" id="6_w3hfb"]
+[ext_resource type="PackedScene" uid="uid://cxi0udj1p0tsv" path="res://ball.tscn" id="7_vtebx"]
+[ext_resource type="PackedScene" uid="uid://dubudw321u6bx" path="res://Prefabs/Block.tscn" id="10_8ltsb"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_7ddsq"]
+shader = ExtResource("1_jrfpt")
+shader_parameter/grid_scale = 12.0
+shader_parameter/line_thickness = 0.014
+shader_parameter/glow = 0.9
+shader_parameter/speed = 0.55
+shader_parameter/binary_density = 0.45
+shader_parameter/color_base = Color(0.02, 0.05, 0.12, 1)
+shader_parameter/color_grid = Color(0, 1, 0.9, 1)
+shader_parameter/color_accent = Color(1, 0, 0.9, 1)
+shader_parameter/color_glow = Color(0.6, 0.2, 1, 1)
+
+[sub_resource type="Sky" id="Sky_djx50"]
+sky_material = SubResource("ShaderMaterial_7ddsq")
+
+[sub_resource type="Environment" id="Environment_r0jk7"]
+background_mode = 2
+sky = SubResource("Sky_djx50")
+
+[sub_resource type="Resource" id="Resource_y357x"]
+script = ExtResource("4_xjfwu")
+flags = 0
+move_drag = 5.0
+move_traction = 30.0
+stop_on_slope = true
+move_max_slope = 45.0
+jump_max_slope = 45.0
+jump_velocity = 3.0
+bounciness = 0.0
+bounce_threshold = 1.0
+metadata/_custom_type_script = "uid://bv2m2vhbmhphl"
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_rj66w"]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_jrfpt"]
+transparency = 1
+albedo_color = Color(0.105882, 0.631373, 0.776471, 0.878431)
+
+[sub_resource type="BoxMesh" id="BoxMesh_2vn5f"]
+material = SubResource("StandardMaterial3D_jrfpt")
+
+[node name="Root" type="Node3D"]
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="."]
+environment = SubResource("Environment_r0jk7")
+
+[node name="XROrigin3D" type="XROrigin3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -9.05829, -13.3326, -10.9427)
+current = true
+
+[node name="XRCamera3D" type="XRCamera3D" parent="XROrigin3D"]
+
+[node name="XRController3D_left" type="XRController3D" parent="XROrigin3D"]
+tracker = &"left_hand"
+
+[node name="XRToolsMovementDirect" type="Node" parent="XROrigin3D/XRController3D_left" groups=["movement_providers"]]
+script = ExtResource("1_xjfwu")
+strafe = true
+metadata/_custom_type_script = "uid://b413xsqlx50gc"
+
+[node name="LeftHand" parent="XROrigin3D/XRController3D_left" instance=ExtResource("2_rj66w")]
+
+[node name="FunctionPickup" parent="XROrigin3D/XRController3D_left" instance=ExtResource("3_2vn5f")]
+
+[node name="BoundPickable" type="Node3D" parent="XROrigin3D/XRController3D_left" node_paths=PackedStringArray("pickup_function")]
+script = ExtResource("6_w3hfb")
+bound_pickable = ExtResource("7_vtebx")
+pickup_function = NodePath("../FunctionPickup")
+
+[node name="XRController3D_right" type="XRController3D" parent="XROrigin3D"]
+tracker = &"right_hand"
+
+[node name="XRToolsMovementJump" type="Node" parent="XROrigin3D/XRController3D_right" groups=["movement_providers"]]
+script = ExtResource("2_y357x")
+jump_button_action = "ax_button"
+metadata/_custom_type_script = "uid://c7f8dmrhmbqlj"
+
+[node name="XRToolsMovementTurn" type="Node" parent="XROrigin3D/XRController3D_right" groups=["movement_providers"]]
+script = ExtResource("3_rj66w")
+turn_mode = 2
+metadata/_custom_type_script = "uid://dvhq2nm2cg5gs"
+
+[node name="RightHand" parent="XROrigin3D/XRController3D_right" instance=ExtResource("5_2vn5f")]
+
+[node name="FunctionPickup" parent="XROrigin3D/XRController3D_right" instance=ExtResource("3_2vn5f")]
+
+[node name="BoundPickable" type="Node3D" parent="XROrigin3D/XRController3D_right" node_paths=PackedStringArray("pickup_function")]
+script = ExtResource("6_w3hfb")
+bound_pickable = ExtResource("7_vtebx")
+pickup_function = NodePath("../FunctionPickup")
+
+[node name="PlayerBody" parent="XROrigin3D" instance=ExtResource("1_y6ddt")]
+physics = SubResource("Resource_y357x")
+
+[node name="StartXR" type="Node" parent="."]
+script = ExtResource("1_04wuu")
+
+[node name="Environment" type="Node3D" parent="."]
+
+[node name="Flooring" type="Node3D" parent="Environment"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.51, 0)
+
+[node name="Floor" parent="Environment/Flooring" instance=ExtResource("10_8ltsb")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 3, 0, -3)
+
+[node name="@Node3D@68568" parent="Environment/Flooring" instance=ExtResource("10_8ltsb")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.5, -1.5, -4.5)
+
+[node name="@Node3D@68569" parent="Environment/Flooring" instance=ExtResource("10_8ltsb")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -3, 0, -9)
+
+[node name="@Node3D@68570" parent="Environment/Flooring" instance=ExtResource("10_8ltsb")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -4.5, 1.5, -7.5)
+
+[node name="@Node3D@68571" parent="Environment/Flooring" instance=ExtResource("10_8ltsb")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -7.5, 4.5, -4.5)
+
+[node name="@Node3D@68572" parent="Environment/Flooring" instance=ExtResource("10_8ltsb")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -7.5, 7.5, -4.5)
+
+[node name="@Node3D@68573" parent="Environment/Flooring" instance=ExtResource("10_8ltsb")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -10.5, 7.5, -7.5)
+
+[node name="@Node3D@68574" parent="Environment/Flooring" instance=ExtResource("10_8ltsb")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -10.5, 4.5, -10.5)
+
+[node name="@Node3D@68575" parent="Environment/Flooring" instance=ExtResource("10_8ltsb")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -9, 3, -9)
+
+[node name="@Node3D@68576" parent="Environment/Flooring" instance=ExtResource("10_8ltsb")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -7.5, 4.5, -13.5)
+
+[node name="@Node3D@68577" parent="Environment/Flooring" instance=ExtResource("10_8ltsb")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -10.5, -4.5, -19.5)
+
+[node name="@Node3D@68578" parent="Environment/Flooring" instance=ExtResource("10_8ltsb")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -10.5, -4.5, -16.5)
+
+[node name="@Node3D@68579" parent="Environment/Flooring" instance=ExtResource("10_8ltsb")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -12, -6, -18)
+
+[node name="@Node3D@68580" parent="Environment/Flooring" instance=ExtResource("10_8ltsb")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -13.5, -4.5, -16.5)
+
+[node name="@Node3D@68581" parent="Environment/Flooring" instance=ExtResource("10_8ltsb")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -15, -6, -15)
+
+[node name="@Node3D@68582" parent="Environment/Flooring" instance=ExtResource("10_8ltsb")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -13.5, -1.5, -10.5)
+
+[node name="@Node3D@68583" parent="Environment/Flooring" instance=ExtResource("10_8ltsb")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -15, 0, -9)
+
+[node name="@Node3D@68584" parent="Environment/Flooring" instance=ExtResource("10_8ltsb")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -16.5, -1.5, -10.5)
+
+[node name="@Node3D@68585" parent="Environment/Flooring" instance=ExtResource("10_8ltsb")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -15, 0, -12)
+
+[node name="@Node3D@68586" parent="Environment/Flooring" instance=ExtResource("10_8ltsb")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -13.5, 1.5, -10.5)
+
+[node name="@Node3D@68587" parent="Environment/Flooring" instance=ExtResource("10_8ltsb")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -15, 3, -9)
+
+[node name="@Node3D@68588" parent="Environment/Flooring" instance=ExtResource("10_8ltsb")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -13.5, 4.5, -10.5)
+
+[node name="@Node3D@68589" parent="Environment/Flooring" instance=ExtResource("10_8ltsb")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -12, 3, -12)
+
+[node name="@Node3D@68590" parent="Environment/Flooring" instance=ExtResource("10_8ltsb")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -13.5, 1.5, -13.5)
+
+[node name="@Node3D@68591" parent="Environment/Flooring" instance=ExtResource("10_8ltsb")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -13.5, -1.5, -13.5)
+
+[node name="@Node3D@68592" parent="Environment/Flooring" instance=ExtResource("10_8ltsb")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -10.5, -1.5, -13.5)
+
+[node name="@Node3D@68593" parent="Environment/Flooring" instance=ExtResource("10_8ltsb")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -9, -3, -12)
+
+[node name="@Node3D@68594" parent="Environment/Flooring" instance=ExtResource("10_8ltsb")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -7.5, -1.5, -10.5)
+
+[node name="@Node3D@68595" parent="Environment/Flooring" instance=ExtResource("10_8ltsb")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -7.5, -4.5, -7.5)
+
+[node name="@Node3D@68596" parent="Environment/Flooring" instance=ExtResource("10_8ltsb")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -6, -3, -6)
+
+[node name="@Node3D@68597" parent="Environment/Flooring" instance=ExtResource("10_8ltsb")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -4.5, -1.5, -7.5)
+
+[node name="@Node3D@68598" parent="Environment/Flooring" instance=ExtResource("10_8ltsb")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -4.5, 1.5, -7.5)
+
+[node name="@Node3D@68599" parent="Environment/Flooring" instance=ExtResource("10_8ltsb")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -4.5, 1.5, -10.5)
+
+[node name="@Node3D@68600" parent="Environment/Flooring" instance=ExtResource("10_8ltsb")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -3, 0, -12)
+
+[node name="@Node3D@68601" parent="Environment/Flooring" instance=ExtResource("10_8ltsb")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -4.5, -1.5, -13.5)
+
+[node name="@Node3D@68602" parent="Environment/Flooring" instance=ExtResource("10_8ltsb")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -3, 0, -12)
+
+[node name="@Node3D@68603" parent="Environment/Flooring" instance=ExtResource("10_8ltsb")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -4.5, 1.5, -13.5)
+
+[node name="@Node3D@68604" parent="Environment/Flooring" instance=ExtResource("10_8ltsb")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -6, 3, -12)
+
+[node name="@Node3D@68605" parent="Environment/Flooring" instance=ExtResource("10_8ltsb")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -4.5, 4.5, -13.5)
+
+[node name="@Node3D@68606" parent="Environment/Flooring" instance=ExtResource("10_8ltsb")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -4.5, 4.5, -16.5)
+
+[node name="@Node3D@68607" parent="Environment/Flooring" instance=ExtResource("10_8ltsb")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -3, 6, -18)
+
+[node name="@Node3D@68608" parent="Environment/Flooring" instance=ExtResource("10_8ltsb")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -4.5, 7.5, -16.5)
+
+[node name="@Node3D@68609" parent="Environment/Flooring" instance=ExtResource("10_8ltsb")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -6, 6, -15)
+
+[node name="@Node3D@68610" parent="Environment/Flooring" instance=ExtResource("10_8ltsb")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -7.5, 4.5, -13.5)
+
+[node name="@Node3D@68611" parent="Environment/Flooring" instance=ExtResource("10_8ltsb")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -4.5, 4.5, -13.5)
+
+[node name="@Node3D@68612" parent="Environment/Flooring" instance=ExtResource("10_8ltsb")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -6, 6, -12)
+
+[node name="@Node3D@68613" parent="Environment/Flooring" instance=ExtResource("10_8ltsb")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -7.5, 7.5, -13.5)
+
+[node name="@Node3D@68614" parent="Environment/Flooring" instance=ExtResource("10_8ltsb")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -9, 9, -12)
+
+[node name="@Node3D@68615" parent="Environment/Flooring" instance=ExtResource("10_8ltsb")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -12, 6, -15)
+
+[node name="@Node3D@68616" parent="Environment/Flooring" instance=ExtResource("10_8ltsb")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -13.5, 7.5, -13.5)
+
+[node name="Props" type="Node3D" parent="Environment"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -12.178, -13.4024, -15.7256)
+
+[node name="Floor" type="StaticBody3D" parent="Environment/Props"]
+transform = Transform3D(10, 0, 0, 0, 1, 0, 0, 0, 10, 3.12858, -0.942135, 4.40249)
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Environment/Props/Floor"]
+shape = SubResource("BoxShape3D_rj66w")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="Environment/Props/Floor"]
+mesh = SubResource("BoxMesh_2vn5f")
+
+[node name="Sprite3D" type="Sprite3D" parent="."]
