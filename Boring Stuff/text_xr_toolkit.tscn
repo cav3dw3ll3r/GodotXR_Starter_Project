@@ -1,7 +1,7 @@
 [gd_scene load_steps=21 format=3 uid="uid://dj6xf0ql7gwdu"]
 
 [ext_resource type="Script" uid="uid://bqw0mnwltgofs" path="res://addons/godot-xr-tools/xr/start_xr.gd" id="1_04wuu"]
-[ext_resource type="Shader" uid="uid://c7hj4y6l7moa6" path="res://trippy_sky.gdshader" id="1_jrfpt"]
+[ext_resource type="Shader" uid="uid://c7hj4y6l7moa6" path="res://Boring Stuff/trippy_sky.gdshader" id="1_jrfpt"]
 [ext_resource type="Script" uid="uid://b413xsqlx50gc" path="res://addons/godot-xr-tools/functions/movement_direct.gd" id="1_xjfwu"]
 [ext_resource type="PackedScene" uid="uid://diyu06cw06syv" path="res://addons/godot-xr-tools/player/player_body.tscn" id="1_y6ddt"]
 [ext_resource type="PackedScene" uid="uid://b4kad2kuba1yn" path="res://addons/godot-xr-tools/hands/scenes/lowpoly/left_hand_low.tscn" id="2_rj66w"]
@@ -10,8 +10,8 @@
 [ext_resource type="Script" uid="uid://dvhq2nm2cg5gs" path="res://addons/godot-xr-tools/functions/movement_turn.gd" id="3_rj66w"]
 [ext_resource type="Script" uid="uid://bv2m2vhbmhphl" path="res://addons/godot-xr-tools/overrides/ground_physics_settings.gd" id="4_xjfwu"]
 [ext_resource type="PackedScene" uid="uid://l2n30mpbkdyw" path="res://addons/godot-xr-tools/hands/scenes/lowpoly/right_hand_low.tscn" id="5_2vn5f"]
-[ext_resource type="Script" uid="uid://btb3p66axmos5" path="res://BoundPickable.gd" id="6_w3hfb"]
-[ext_resource type="PackedScene" uid="uid://cxi0udj1p0tsv" path="res://ball.tscn" id="7_vtebx"]
+[ext_resource type="Script" uid="uid://btb3p66axmos5" path="res://Boring Stuff/BoundPickable.gd" id="6_w3hfb"]
+[ext_resource type="PackedScene" uid="uid://cxi0udj1p0tsv" path="res://Boring Stuff/ball.tscn" id="7_vtebx"]
 [ext_resource type="PackedScene" uid="uid://dubudw321u6bx" path="res://Prefabs/Block.tscn" id="10_8ltsb"]
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_7ddsq"]
